@@ -1,26 +1,45 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 
-const Register = () => {
+const Auth = ({ onLogin, onRegister }) => {
+  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [username, setUsername] = useState("");
+
+  const handleSwitch = () => {
+    setIsLogin(!isLogin);
+    setEmail("");
+    setPassword("");
+    setUsername("");
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Le password non coincidono");
-      return;
+    if (isLogin) {
+      onLogin(email, password);
+    } else {
+      onRegister(username, email, password);
     }
-    // Logica di registrazione
   };
 
   return (
     <Container>
-      <Row>
-        <Col>
-          <h1>Registrati</h1>
+      <Row className="justify-content-md-center">
+        <Col md={6}>
+          <h2>{isLogin ? "Login" : "Registrazione"}</h2>
           <Form onSubmit={handleSubmit}>
+            {!isLogin && (
+              <Form.Group controlId="formUsername">
+                <Form.Label>Nome Utente</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Inserisci nome utente"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </Form.Group>
+            )}
             <Form.Group controlId="formEmail">
               <Form.Label>Email</Form.Label>
               <Form.Control
@@ -30,7 +49,6 @@ const Register = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Form.Group>
-
             <Form.Group controlId="formPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control
@@ -40,19 +58,11 @@ const Register = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Form.Group>
-
-            <Form.Group controlId="formConfirmPassword">
-              <Form.Label>Conferma Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Conferma password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </Form.Group>
-
             <Button variant="primary" type="submit">
-              Registrati
+              {isLogin ? "Login" : "Registrati"}
+            </Button>
+            <Button variant="link" onClick={handleSwitch}>
+              {isLogin ? "Non hai un account? Registrati" : "Hai già un account? Login"}
             </Button>
           </Form>
         </Col>
@@ -61,4 +71,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Auth;
