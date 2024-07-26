@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 
 const Auth = ({ onLogin, onRegister }) => {
@@ -6,20 +7,21 @@ const Auth = ({ onLogin, onRegister }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const navigate = useNavigate();
 
-  const handleSwitch = () => {
+  const toggleForm = () => {
     setIsLogin(!isLogin);
-    setEmail("");
-    setPassword("");
-    setUsername("");
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
     if (isLogin) {
       onLogin(email, password);
+      navigate("/wallets"); // Redirect to wallets after login
     } else {
       onRegister(username, email, password);
+      navigate("/auth"); // Redirect to login after registration
+      setIsLogin(true);
     }
   };
 
@@ -31,7 +33,7 @@ const Auth = ({ onLogin, onRegister }) => {
           <Form onSubmit={handleSubmit}>
             {!isLogin && (
               <Form.Group controlId="formUsername">
-                <Form.Label>Nome Utente</Form.Label>
+                <Form.Label>Username</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Inserisci nome utente"
@@ -61,7 +63,7 @@ const Auth = ({ onLogin, onRegister }) => {
             <Button variant="primary" type="submit">
               {isLogin ? "Login" : "Registrati"}
             </Button>
-            <Button variant="link" onClick={handleSwitch}>
+            <Button variant="link" onClick={toggleForm} className="mt-3">
               {isLogin ? "Non hai un account? Registrati" : "Hai già un account? Login"}
             </Button>
           </Form>

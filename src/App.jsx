@@ -50,14 +50,16 @@ const App = () => {
     setWallets(updatedWallets);
   };
 
+  const deleteWallet = (id) => {
+    setWallets(wallets.filter((wallet) => wallet.id !== id));
+  };
+
   const handleLogin = (email, password) => {
-    // Simula una chiamata di login
     setIsAuthenticated(true);
     setAccountData({ username: "User", email });
   };
 
   const handleRegister = (username, email, password) => {
-    // Simula una chiamata di registrazione
     setIsAuthenticated(true);
     setAccountData({ username, email });
   };
@@ -74,18 +76,26 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<Auth onLogin={handleLogin} onRegister={handleRegister} />} />
-          {isAuthenticated && (
+          {isAuthenticated ? (
             <>
               <Route path="/wallets/:id/add-transaction" element={<AddTransaction addTransaction={addTransaction} />} />
               <Route path="/wallets/:id" element={<WalletDetail wallets={wallets} addTransaction={addTransaction} />} />
               <Route
                 path="/wallets"
-                element={<Wallets wallets={wallets} addWallet={addWallet} editWalletName={editWalletName} />}
+                element={
+                  <Wallets
+                    wallets={wallets}
+                    addWallet={addWallet}
+                    editWalletName={editWalletName}
+                    deleteWallet={deleteWallet}
+                  />
+                }
               />
               <Route path="/account" element={<Account accountData={accountData} />} />
             </>
+          ) : (
+            <Route path="*" element={<Navigate to="/" />} />
           )}
-          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
     </Router>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Nav } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const NavigationBar = ({ isAuthenticated, handleLogout }) => {
@@ -19,12 +19,15 @@ const NavigationBar = ({ isAuthenticated, handleLogout }) => {
               <Nav.Link as={Link} to="/wallets">
                 Wallets
               </Nav.Link>
-              <Nav.Link as={Link} to="/account">
-                Account
-              </Nav.Link>
-              <Nav.Link as={Link} to="/" onClick={handleLogout}>
-                Logout
-              </Nav.Link>
+              <NavDropdown title="Account" id="basic-nav-dropdown" alignRight>
+                <NavDropdown.Item as={Link} to="/account">
+                  Account Details
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item as={Link} to="/" onClick={handleLogout}>
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
             </>
           ) : (
             <Nav.Link as={Link} to="/auth">
