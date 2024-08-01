@@ -17,13 +17,13 @@ const AddTransaction = ({ addTransaction }) => {
   };
 
   return (
-    <Container>
+    <Container className="my-3">
       <Row>
         <Col>
           <h1>Aggiungi Transazione</h1>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} className="my-2">
             <Form.Group controlId="formType">
-              <Form.Label>Tipo di Transazione</Form.Label>
+              <Form.Label className="my-1">Tipo di Transazione</Form.Label>
               <Form.Control as="select" value={type} onChange={(e) => setType(e.target.value)}>
                 <option>Deposit</option>
                 <option>Withdrawal</option>
@@ -31,7 +31,7 @@ const AddTransaction = ({ addTransaction }) => {
             </Form.Group>
 
             <Form.Group controlId="formAmount">
-              <Form.Label>Importo</Form.Label>
+              <Form.Label className="my-1">Importo</Form.Label>
               <Form.Control
                 type="number"
                 placeholder="Inserisci importo"
@@ -41,12 +41,12 @@ const AddTransaction = ({ addTransaction }) => {
             </Form.Group>
 
             <Form.Group controlId="formDate">
-              <Form.Label>Data</Form.Label>
+              <Form.Label className="my-1">Data</Form.Label>
               <Form.Control type="date" value={date} onChange={(e) => setDate(e.target.value)} />
             </Form.Group>
 
-            <Button variant="primary" type="submit">
-              Aggiungi Transazione
+            <Button variant="primary" type="submit" className="mt-3">
+              Salva
             </Button>
           </Form>
         </Col>

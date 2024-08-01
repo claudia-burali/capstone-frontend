@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button, Card, Modal } from "react-bootstrap";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { GrAdd } from "react-icons/gr";
+import { LuPencil } from "react-icons/lu";
 import { Link } from "react-router-dom";
 
 const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
@@ -49,46 +52,55 @@ const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
   };
 
   return (
-    <Container>
-      <Row>
+    <Container className="my-4">
+      <div className="my-1 d-flex justify-content-between align-items-center">
+        <div>
+          <h1>Riepilogo dei tuoi Wallets</h1>
+        </div>
+        <div>
+          <Button variant="primary" onClick={() => setShowAddModal(true)}>
+            <GrAdd className="mb-1" size={20} />
+          </Button>
+        </div>
+      </div>
+      <Row className="my-2">
         <Col>
-          <h1>I tuoi Wallet</h1>
           {wallets.map((wallet) => (
             <Card key={wallet.id} className="mb-3">
               <Card.Body>
                 <Card.Title>{wallet.name}</Card.Title>
-                <Button variant="secondary" onClick={() => startEditing(wallet.id, wallet.name)} className="ml-2">
-                  <i class="bi bi-pencil"></i>
-                </Button>
-                <Button variant="danger" onClick={() => startDeleting(wallet.id)} className="ml-2">
-                  <i class="bi bi-trash3"></i>
-                </Button>
+
                 <Card.Text>Saldo: {wallet.balance}</Card.Text>
-                <Link to={`/wallets/${wallet.id}`} className="btn btn-primary">
-                  Dettagli
-                </Link>
+                <div className="d-flex justify-content-between">
+                  <div>
+                    <Link to={`/wallets/${wallet.id}`} className="btn btn-primary">
+                      Dettagli
+                    </Link>
+                  </div>
+                  <div>
+                    <Button variant="secondary" onClick={() => startEditing(wallet.id, wallet.name)} className="ml-2">
+                      <LuPencil className="mb-1" size={16} />
+                    </Button>
+                    <Button variant="danger" onClick={() => startDeleting(wallet.id)} className="ml-2">
+                      <FaRegTrashCan className="mb-1" size={16} />
+                    </Button>
+                  </div>
+                </div>
               </Card.Body>
             </Card>
           ))}
         </Col>
       </Row>
-      <Row>
-        <Col>
-          <Button variant="primary" onClick={() => setShowAddModal(true)}>
-            Aggiungi Wallet
-          </Button>
-        </Col>
-      </Row>
 
       {/* Modale per aggiungere un nuovo wallet */}
-      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)} className="my-5">
         <Modal.Header closeButton>
           <Modal.Title>Aggiungi nuovo Wallet</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleAddSubmit}>
             <Form.Group controlId="formName">
-              <Form.Label>Nome del Wallet</Form.Label>
+              <Form.Label className="my-1">Nome del Wallet</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Inserisci nome"
@@ -96,22 +108,22 @@ const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
                 onChange={(e) => setName(e.target.value)}
               />
             </Form.Group>
-            <Button variant="primary" type="submit">
-              Aggiungi Wallet
+            <Button variant="primary" type="submit" className="mt-3">
+              Salva
             </Button>
           </Form>
         </Modal.Body>
       </Modal>
 
       {/* Modale per modificare il nome del wallet */}
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} className="my-5">
         <Modal.Header closeButton>
           <Modal.Title>Modifica Nome Wallet</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleEditSubmit}>
             <Form.Group controlId="formEditName">
-              <Form.Label>Nuovo Nome del Wallet</Form.Label>
+              <Form.Label className="my-1">Nuovo nome del Wallet</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Inserisci nuovo nome"
@@ -119,7 +131,7 @@ const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
                 onChange={(e) => setEditName(e.target.value)}
               />
             </Form.Group>
-            <Button variant="secondary" type="submit">
+            <Button variant="secondary" type="submit" className="mt-3">
               Salva
             </Button>
           </Form>
@@ -127,7 +139,7 @@ const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
       </Modal>
 
       {/* Modale per confermare l'eliminazione del wallet */}
-      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} className="my-5">
         <Modal.Header closeButton>
           <Modal.Title>Conferma Eliminazione</Modal.Title>
         </Modal.Header>

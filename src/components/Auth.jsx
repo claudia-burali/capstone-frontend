@@ -26,36 +26,36 @@ const Auth = ({ onLogin, onRegister }) => {
   };
 
   return (
-    <Container>
+    <Container className="my-5">
       <Row className="justify-content-md-center">
         <Col md={6}>
           <h2>{isLogin ? "Login" : "Registrazione"}</h2>
-          <Form onSubmit={handleSubmit}>
+          <Form className="my-3" onSubmit={handleSubmit}>
             {!isLogin && (
-              <Form.Group controlId="formUsername">
-                <Form.Label>Username</Form.Label>
+              <Form.Group className="my-2" controlId="formUsername">
+                <Form.Label className="my-1">Username</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Inserisci nome utente"
+                  placeholder="Inserisci il nome utente"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
               </Form.Group>
             )}
-            <Form.Group controlId="formEmail">
-              <Form.Label>Email</Form.Label>
+            <Form.Group className="my-2" controlId="formEmail">
+              <Form.Label className="my-1">Email</Form.Label>
               <Form.Control
                 type="email"
-                placeholder="Inserisci email"
+                placeholder="Inserisci l'email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Form.Group>
-            <Form.Group controlId="formPassword">
-              <Form.Label>Password</Form.Label>
+            <Form.Group className="my-2" controlId="formPassword">
+              <Form.Label className="my-1">Password</Form.Label>
               <Form.Control
                 type="password"
-                placeholder="Inserisci password"
+                placeholder="Inserisci la password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />

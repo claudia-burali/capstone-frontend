@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 
 const Account = ({ accountData }) => {
   return (
-    <Container>
+    <Container className="my-3">
       <Row className="justify-content-md-center">
         <Col md={6}>
           <h2>Account Details</h2>

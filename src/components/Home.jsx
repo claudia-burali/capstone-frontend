@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 
 const Home = () => {
   return (
-    <Container>
+    <Container className="my-5">
       <Row>
         <Col>
           <h1>Benvenuto in Crypto Tracker</h1>

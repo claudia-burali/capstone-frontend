@@ -11,13 +11,13 @@ const WalletDetail = ({ wallets, addTransaction }) => {
   }
 
   return (
-    <Container>
+    <Container className="my-3">
       <Row>
         <Col>
-          <h1>Dettagli Wallet: {wallet.name}</h1>
+          <h1>{wallet.name}</h1>
           <Card className="mb-3">
             <Card.Body>
-              <Card.Title>Bilancio: ${wallet.balance}</Card.Title>
+              <Card.Title>Saldo: ${wallet.balance}</Card.Title>
               <Button as={Link} to={`/wallets/${wallet.id}/add-transaction`} variant="primary">
                 Aggiungi Transazione
               </Button>
