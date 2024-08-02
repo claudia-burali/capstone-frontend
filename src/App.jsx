@@ -15,8 +15,11 @@ const App = () => {
     {
       id: 1,
       name: "Main Wallet",
-      balance: 5000,
-      transactions: [{ type: "Deposit", amount: 5000, date: "2024-01-01" }],
+      balance: 0.25,
+      investment: 500,
+      average: 2000,
+      currencyPair: "BTC/EUR",
+      transactions: [{ value: 2000, volume: 500, amount: 0.25, date: "2024-01-01", exchange: "Binance" }],
     },
   ]);
 
@@ -40,10 +43,25 @@ const App = () => {
     setWallets(updatedWallets);
   };
 
-  const editWalletName = (walletId, newName) => {
+  const deleteTransaction = (walletId, transactionIndex) => {
+    const updatedWallets = wallets.map((wallet) => {
+      if (wallet.id === parseInt(walletId)) {
+        wallet.transactions.splice(transactionIndex, 1); // Rimuove la transazione
+        // Ricalcola il saldo
+        wallet.balance = wallet.transactions.reduce((acc, transaction) => {
+          return acc + (transaction.type === "Deposit" ? transaction.amount : -transaction.amount);
+        }, wallet.balance);
+      }
+      return wallet;
+    });
+    setWallets(updatedWallets);
+  };
+
+  const editWalletName = (walletId, newName, newCurrencyPair) => {
     const updatedWallets = wallets.map((wallet) => {
       if (wallet.id === parseInt(walletId)) {
         wallet.name = newName;
+        wallet.currencyPair = newCurrencyPair;
       }
       return wallet;
     });
@@ -79,7 +97,16 @@ const App = () => {
           {isAuthenticated ? (
             <>
               <Route path="/wallets/:id/add-transaction" element={<AddTransaction addTransaction={addTransaction} />} />
-              <Route path="/wallets/:id" element={<WalletDetail wallets={wallets} addTransaction={addTransaction} />} />
+              <Route
+                path="/wallets/:id"
+                element={
+                  <WalletDetail
+                    wallets={wallets}
+                    addTransaction={addTransaction}
+                    deleteTransaction={deleteTransaction}
+                  />
+                }
+              />
               <Route
                 path="/wallets"
                 element={

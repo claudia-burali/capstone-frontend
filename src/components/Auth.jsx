@@ -29,7 +29,7 @@ const Auth = ({ onLogin, onRegister }) => {
     <Container className="my-5">
       <Row className="justify-content-md-center">
         <Col md={6}>
-          <h2>{isLogin ? "Login" : "Registrazione"}</h2>
+          <h2>{isLogin ? "Accedi" : "Benvenuto su ExelLense"}</h2>
           <Form className="my-3" onSubmit={handleSubmit}>
             {!isLogin && (
               <Form.Group className="my-2" controlId="formUsername">
@@ -61,10 +61,10 @@ const Auth = ({ onLogin, onRegister }) => {
               />
             </Form.Group>
             <Button variant="primary" type="submit">
-              {isLogin ? "Login" : "Registrati"}
+              {isLogin ? "Accedi" : "Registrati"}
             </Button>
             <Button variant="link" onClick={toggleForm} className="mt-3">
-              {isLogin ? "Non hai un account? Registrati" : "Hai già un account? Login"}
+              {isLogin ? "Non hai un account? Registrati" : "Hai già un account? Accedi"}
             </Button>
           </Form>
         </Col>

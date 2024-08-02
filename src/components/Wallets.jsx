@@ -7,7 +7,9 @@ import { Link } from "react-router-dom";
 
 const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
   const [name, setName] = useState("");
+  const [currencyPair, setCurrencyPair] = useState("BTC/EUR");
   const [editName, setEditName] = useState("");
+  const [editCurrencyPair, setEditCurrencyPair] = useState("BTC/EUR");
   const [walletIdToEdit, setWalletIdToEdit] = useState(null);
   const [walletIdToDelete, setWalletIdToDelete] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -17,9 +19,10 @@ const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
   const handleAddSubmit = (e) => {
     e.preventDefault();
     if (name.trim() !== "") {
-      const newWallet = { name, balance: 0, transactions: [] };
+      const newWallet = { name, currencyPair, balance: 0, transactions: [] };
       addWallet(newWallet);
       setName("");
+      setCurrencyPair("BTC/EUR");
       setShowAddModal(false);
     }
   };
@@ -27,9 +30,10 @@ const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
   const handleEditSubmit = (e) => {
     e.preventDefault();
     if (editName.trim() !== "") {
-      editWalletName(walletIdToEdit, editName);
+      editWalletName(walletIdToEdit, editName, editCurrencyPair);
       setWalletIdToEdit(null);
       setEditName("");
+      setEditCurrencyPair("BTC/EUR");
       setShowEditModal(false);
     }
   };
@@ -40,9 +44,10 @@ const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
     setShowDeleteModal(false);
   };
 
-  const startEditing = (walletId, currentName) => {
+  const startEditing = (walletId, currentName, currentCurrencyPair) => {
     setWalletIdToEdit(walletId);
     setEditName(currentName);
+    setEditCurrencyPair(currentCurrencyPair);
     setShowEditModal(true);
   };
 
@@ -68,24 +73,29 @@ const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
           {wallets.map((wallet) => (
             <Card key={wallet.id} className="mb-3">
               <Card.Body>
-                <Card.Title>{wallet.name}</Card.Title>
-
+                <Card.Title>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div>
+                      {wallet.name} ({wallet.currencyPair})
+                    </div>
+                    <div>
+                      <Button
+                        variant="secondary"
+                        onClick={() => startEditing(wallet.id, wallet.name, wallet.currencyPair)}
+                        className="ml-2"
+                      >
+                        <LuPencil className="mb-1" size={16} />
+                      </Button>
+                      <Button variant="danger" onClick={() => startDeleting(wallet.id)} className="ml-2">
+                        <FaRegTrashCan className="mb-1" size={16} />
+                      </Button>
+                    </div>
+                  </div>
+                </Card.Title>
                 <Card.Text>Saldo: {wallet.balance}</Card.Text>
-                <div className="d-flex justify-content-between">
-                  <div>
-                    <Link to={`/wallets/${wallet.id}`} className="btn btn-primary">
-                      Dettagli
-                    </Link>
-                  </div>
-                  <div>
-                    <Button variant="secondary" onClick={() => startEditing(wallet.id, wallet.name)} className="ml-2">
-                      <LuPencil className="mb-1" size={16} />
-                    </Button>
-                    <Button variant="danger" onClick={() => startDeleting(wallet.id)} className="ml-2">
-                      <FaRegTrashCan className="mb-1" size={16} />
-                    </Button>
-                  </div>
-                </div>
+                <Link to={`/wallets/${wallet.id}`} className="btn btn-primary">
+                  Dettagli
+                </Link>
               </Card.Body>
             </Card>
           ))}
@@ -107,6 +117,14 @@ const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
+            </Form.Group>
+            <Form.Group controlId="formCurrencyPair">
+              <Form.Label className="my-1">Coppia di valute</Form.Label>
+              <Form.Control as="select" value={currencyPair} onChange={(e) => setCurrencyPair(e.target.value)}>
+                <option value="BTC/EUR">BTC/EUR</option>
+                <option value="ETH/EUR">ETH/EUR</option>
+                <option value="BTC/USD">BTC/USD</option>
+              </Form.Control>
             </Form.Group>
             <Button variant="primary" type="submit" className="mt-3">
               Salva
@@ -130,6 +148,14 @@ const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
               />
+            </Form.Group>
+            <Form.Group controlId="formEditCurrencyPair">
+              <Form.Label className="my-1">Coppia di valute</Form.Label>
+              <Form.Control as="select" value={editCurrencyPair} onChange={(e) => setEditCurrencyPair(e.target.value)}>
+                <option value="BTC/EUR">BTC/EUR</option>
+                <option value="ETH/USD">ETH/USD</option>
+                <option value="LTC/GBP">LTC/GBP</option>
+              </Form.Control>
             </Form.Group>
             <Button variant="secondary" type="submit" className="mt-3">
               Salva
