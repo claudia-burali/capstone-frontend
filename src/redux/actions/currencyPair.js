@@ -2,9 +2,9 @@ export const ADD_CURRENCYPAIR_REQUEST = "ADD_CURRENCYPAIR_REQUEST";
 export const ADD_CURRENCYPAIR_SUCCESS = "ADD_CURRENCYPAIR_SUCCESS";
 export const ADD_CURRENCYPAIR_FAILURE = "ADD_CURRENCYPAIR_FAILURE";
 
-const addCurrencyPairRequest = () => ({
+/*const addCurrencyPairRequest = () => ({
   type: ADD_CURRENCYPAIR_REQUEST,
-});
+});*/
 
 const addCurrencyPairSuccess = (data) => ({
   type: ADD_CURRENCYPAIR_SUCCESS,

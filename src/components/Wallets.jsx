@@ -6,10 +6,10 @@ import { LuPencil } from "react-icons/lu";
 import { Link } from "react-router-dom";
 
 const Wallets = ({ wallets, addWallet, editWalletName, deleteWallet }) => {
-  const [formData, setFormData] = useState({
+  /*const [formData, setFormData] = useState({
     name: "",
-    currencyPairName: "",
-  });
+    currencyPairName:"",
+  });*/
 
   const [name, setName] = useState("");
   const [currencyPair, setCurrencyPair] = useState("BTC/EUR");
