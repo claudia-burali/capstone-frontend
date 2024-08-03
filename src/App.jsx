@@ -7,8 +7,9 @@ import Home from "./components/Home";
 import Auth from "./components/Auth";
 import Wallets from "./components/Wallets";
 import WalletDetail from "./components/WalletDetail";
-import AddTransaction from "./components/AddTransaction";
 import Account from "./components/Account";
+import { logoutUser } from "./redux/actions/user";
+import { useDispatch } from "react-redux";
 
 const App = () => {
   const [wallets, setWallets] = useState([
@@ -25,6 +26,7 @@ const App = () => {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [accountData, setAccountData] = useState({ username: "", email: "" });
+  const dispatch = useDispatch();
 
   const addWallet = (wallet) => {
     wallet.id = wallets.length + 1;
@@ -85,6 +87,7 @@ const App = () => {
   const handleLogout = () => {
     setIsAuthenticated(false);
     setAccountData({ username: "", email: "" });
+    dispatch(logoutUser());
   };
 
   return (
@@ -96,7 +99,6 @@ const App = () => {
           <Route path="/auth" element={<Auth onLogin={handleLogin} onRegister={handleRegister} />} />
           {isAuthenticated ? (
             <>
-              <Route path="/wallets/:id/add-transaction" element={<AddTransaction addTransaction={addTransaction} />} />
               <Route
                 path="/wallets/:id"
                 element={

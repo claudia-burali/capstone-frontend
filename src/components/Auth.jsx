@@ -1,27 +1,41 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { loginUser, registerUser } from "../redux/actions/user";
+import { useNavigate } from "react-router-dom";
 
 const Auth = ({ onLogin, onRegister }) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    surname: "",
+    birthDate: "",
+    username: "",
+    email: "",
+    password: "",
+  });
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
+  const toggleFormRegister = () => setIsLogin(false);
+  const toggleFormLogin = () => setIsLogin(true);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const toggleForm = () => {
-    setIsLogin(!isLogin);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (isLogin) {
+      const { email, password } = formData;
+      dispatch(loginUser({ email, password }));
       onLogin(email, password);
-      navigate("/wallets"); // Redirect to wallets after login
+      navigate("/wallets");
     } else {
-      onRegister(username, email, password);
-      navigate("/auth"); // Redirect to login after registration
-      setIsLogin(true);
+      dispatch(registerUser(formData));
+      onRegister(formData.username, formData.email, formData.password);
+      toggleFormLogin();
     }
   };
 
@@ -32,40 +46,81 @@ const Auth = ({ onLogin, onRegister }) => {
           <h2>{isLogin ? "Accedi" : "Benvenuto su ExelLense"}</h2>
           <Form className="my-3" onSubmit={handleSubmit}>
             {!isLogin && (
-              <Form.Group className="my-2" controlId="formUsername">
-                <Form.Label className="my-1">Username</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Inserisci il nome utente"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </Form.Group>
+              <>
+                <Form.Group className="my-2">
+                  <Form.Label className="my-1">Nome</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Inserisci il tuo nome"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+                <Form.Group className="my-2">
+                  <Form.Label className="my-1">Cognome</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Inserisci il tuo cognome"
+                    name="surname"
+                    value={formData.surname}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+                <Form.Group className="my-2">
+                  <Form.Label className="my-1">Data di nascita</Form.Label>
+                  <Form.Control
+                    type="date"
+                    placeholder="Inserisci la tua data di nascita"
+                    name="birthDate"
+                    value={formData.birthDate}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+                <Form.Group className="my-2">
+                  <Form.Label className="my-1">Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Inserisci il nome utente"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </>
             )}
-            <Form.Group className="my-2" controlId="formEmail">
+            <Form.Group className="my-2">
               <Form.Label className="my-1">Email</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Inserisci l'email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
               />
             </Form.Group>
-            <Form.Group className="my-2" controlId="formPassword">
+            <Form.Group className="my-2">
               <Form.Label className="my-1">Password</Form.Label>
               <Form.Control
                 type="password"
                 placeholder="Inserisci la password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
               />
             </Form.Group>
             <Button variant="primary" type="submit">
               {isLogin ? "Accedi" : "Registrati"}
             </Button>
-            <Button variant="link" onClick={toggleForm} className="mt-3">
-              {isLogin ? "Non hai un account? Registrati" : "Hai già un account? Accedi"}
-            </Button>
+            {isLogin ? (
+              <Button variant="link" onClick={toggleFormRegister} className="mt-3">
+                Non hai un account? Registrati
+              </Button>
+            ) : (
+              <Button variant="link" onClick={toggleFormLogin} className="mt-3">
+                Hai già un account? Accedi
+              </Button>
+            )}
           </Form>
         </Col>
       </Row>

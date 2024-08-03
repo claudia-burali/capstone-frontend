@@ -1,15 +1,22 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Card, Button, Table, Modal } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Table, Modal, Form } from "react-bootstrap";
 import { GrAdd } from "react-icons/gr";
-import { FaRegTrashCan } from "react-icons/fa6"; // Importa l'icona del cestino
-import { Link, useParams } from "react-router-dom";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { useParams } from "react-router-dom";
 
-const WalletDetail = ({ wallets, deleteTransaction }) => {
+const WalletDetail = ({ wallets, addTransaction, deleteTransaction }) => {
   const { id } = useParams();
   const wallet = wallets.find((w) => w.id === parseInt(id));
 
   const [transactionToDelete, setTransactionToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAddTransactionModal, setShowAddTransactionModal] = useState(false);
+
+  const [value, setValue] = useState("");
+  const [volume, setVolume] = useState("");
+  const [amount, setAmount] = useState("");
+  const [date, setDate] = useState("");
+  const [exchange, setExchange] = useState("");
 
   if (!wallet) {
     return <div>Wallet non trovato</div>;
@@ -24,6 +31,24 @@ const WalletDetail = ({ wallets, deleteTransaction }) => {
     deleteTransaction(wallet.id, transactionToDelete);
     setTransactionToDelete(null);
     setShowDeleteModal(false);
+  };
+
+  const handleAddTransaction = (e) => {
+    e.preventDefault();
+    const newTransaction = {
+      value: parseFloat(value),
+      volume: parseFloat(volume),
+      amount: parseFloat(amount),
+      date,
+      exchange,
+    };
+    addTransaction(wallet.id, newTransaction);
+    setValue("");
+    setVolume("");
+    setAmount("");
+    setDate("");
+    setExchange("");
+    setShowAddTransactionModal(false);
   };
 
   return (
@@ -45,7 +70,7 @@ const WalletDetail = ({ wallets, deleteTransaction }) => {
               <h2>Transazioni</h2>
             </div>
             <div>
-              <Button as={Link} to={`/wallets/${wallet.id}/add-transaction`} variant="primary">
+              <Button variant="primary" onClick={() => setShowAddTransactionModal(true)}>
                 <GrAdd className="mb-1" size={20} />
               </Button>
             </div>
@@ -97,6 +122,69 @@ const WalletDetail = ({ wallets, deleteTransaction }) => {
             Elimina
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      {/* Modale per aggiungere una nuova transazione */}
+      <Modal show={showAddTransactionModal} onHide={() => setShowAddTransactionModal(false)} className="my-5">
+        <Modal.Header closeButton>
+          <Modal.Title>Aggiungi Transazione</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleAddTransaction} className="my-2">
+            <Form.Group controlId="formValue">
+              <Form.Label className="my-1">Prezzo di acquisto</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Inserisci prezzo di acquisto"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                min="0"
+                step="any"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formVolume">
+              <Form.Label className="my-1">Importo</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Inserisci importo"
+                value={volume}
+                onChange={(e) => setVolume(e.target.value)}
+                min="0"
+                step="any"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formAmount">
+              <Form.Label className="my-1">Quantità acquistata</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Inserisci quantità acquistata"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                min="0"
+                step="any"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formDate">
+              <Form.Label className="my-1">Data</Form.Label>
+              <Form.Control type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            </Form.Group>
+
+            <Form.Group controlId="formExchange">
+              <Form.Label className="my-1">Exchange</Form.Label>
+              <Form.Control type="text" value={exchange} onChange={(e) => setExchange(e.target.value)} />
+            </Form.Group>
+
+            <Button variant="primary" type="submit" className="mt-3">
+              Salva
+            </Button>
+          </Form>
+        </Modal.Body>
       </Modal>
     </Container>
   );
