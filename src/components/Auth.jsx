@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser, registerUser } from "../redux/actions/user";
 import { useNavigate } from "react-router-dom";
 
@@ -16,6 +16,8 @@ const Auth = ({ onLogin, onRegister }) => {
   const [isLogin, setIsLogin] = useState(true);
   const toggleFormRegister = () => setIsLogin(false);
   const toggleFormLogin = () => setIsLogin(true);
+  const { success } = useSelector((state) => state.authentication);
+  const { success1 } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleChange = (e) => {
@@ -31,11 +33,15 @@ const Auth = ({ onLogin, onRegister }) => {
       const { email, password } = formData;
       dispatch(loginUser({ email, password }));
       onLogin(email, password);
-      navigate("/wallets");
+      if (success) {
+        navigate("/wallets");
+      }
     } else {
       dispatch(registerUser(formData));
       onRegister(formData.username, formData.email, formData.password);
-      toggleFormLogin();
+      if (success1) {
+        toggleFormLogin();
+      }
     }
   };
 

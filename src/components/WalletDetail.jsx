@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Button, Table, Modal, Form } from "react-bootstrap";
 import { GrAdd } from "react-icons/gr";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
 import { LuPencil } from "react-icons/lu";
+import { useSelector } from "react-redux";
 
-const WalletDetail = ({ wallets, addTransaction, deleteTransaction, updateTransaction }) => {
+const WalletDetail = () => {
   const { id } = useParams();
-  const wallet = wallets.find((w) => w.id === parseInt(id));
+  const { content } = useSelector((state) => state.authentication);
+  const [wallet, setWallet] = useState(null);
+  useEffect(() => {
+    const foudWallet = content.wallets.find((wallet1) => wallet1.id === id);
+    setWallet(foudWallet);
+  }, []);
 
   const [transactionToDelete, setTransactionToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -31,7 +37,6 @@ const WalletDetail = ({ wallets, addTransaction, deleteTransaction, updateTransa
   };
 
   const confirmDeleteTransaction = () => {
-    deleteTransaction(wallet.id, transactionToDelete);
     setTransactionToDelete(null);
     setShowDeleteModal(false);
   };
@@ -45,7 +50,7 @@ const WalletDetail = ({ wallets, addTransaction, deleteTransaction, updateTransa
       date,
       exchange,
     };
-    addTransaction(wallet.id, newTransaction);
+
     setValue("");
     setVolume("");
     setAmount("");
@@ -74,7 +79,7 @@ const WalletDetail = ({ wallets, addTransaction, deleteTransaction, updateTransa
       date,
       exchange,
     };
-    updateTransaction(wallet.id, transactionToEdit, updatedTransaction);
+
     setShowEditTransactionModal(false);
   };
 
@@ -86,9 +91,9 @@ const WalletDetail = ({ wallets, addTransaction, deleteTransaction, updateTransa
           <Card className="mb-4">
             <Card.Body>
               <Card.Title className="my-1 d-flex justify-content-between mb-3">
-                <div>Saldo: {wallet.balance}</div>
-                <div>Totale investito: {wallet.investment}</div>
-                <div>Prezzo di acquisto medio: {wallet.average}</div>
+                <div>Saldo: </div>
+                <div>Totale investito: </div>
+                <div>Prezzo di acquisto medio: </div>
               </Card.Title>
             </Card.Body>
           </Card>

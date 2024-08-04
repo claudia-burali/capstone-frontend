@@ -1,4 +1,4 @@
-import { ADD_WALLET_FAILURE, ADD_WALLET_REQUEST, ADD_WALLET_SUCCESS } from "../actions/wallet";
+import { ADD_WALLET_FAILURE, ADD_WALLET_REQUEST, ADD_WALLET_SUCCESS, RESET_WALLET_STATE } from "../actions/wallet";
 
 const initialState = {
   loading: false,
@@ -16,6 +16,8 @@ const WalletReduce = (state = initialState, action) => {
       return { ...state, loading: false, success: true, content: action.payload, errorMsg: null, error: false };
     case ADD_WALLET_FAILURE:
       return { ...state, loading: false, errorMsg: action.payload, success: false, error: true };
+    case RESET_WALLET_STATE:
+      return initialState;
 
     default:
       return state;

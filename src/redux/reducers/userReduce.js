@@ -2,7 +2,7 @@ import { REGISTER_USER_FAILURE, REGISTER_USER_REQUEST, REGISTER_USER_SUCCESS } f
 
 const initialState = {
   loading: false,
-  success: false,
+  success1: false,
   error: false,
   content: null,
   errorMsg: null,
@@ -13,9 +13,9 @@ const UserReduce = (state = initialState, action) => {
     case REGISTER_USER_REQUEST:
       return { ...state, loading: true };
     case REGISTER_USER_SUCCESS:
-      return { ...state, loading: false, success: true, content: action.payload, errorMsg: null, error: false };
+      return { ...state, loading: false, success1: true, content: action.payload, errorMsg: null, error: false };
     case REGISTER_USER_FAILURE:
-      return { ...state, loading: false, errorMsg: action.payload, success: false, error: true };
+      return { ...state, loading: false, errorMsg: action.payload, success1: false, error: true };
 
     default:
       return state;
