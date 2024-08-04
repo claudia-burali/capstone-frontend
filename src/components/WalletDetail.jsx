@@ -3,14 +3,17 @@ import { Container, Row, Col, Card, Button, Table, Modal, Form } from "react-boo
 import { GrAdd } from "react-icons/gr";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
+import { LuPencil } from "react-icons/lu";
 
-const WalletDetail = ({ wallets, addTransaction, deleteTransaction }) => {
+const WalletDetail = ({ wallets, addTransaction, deleteTransaction, updateTransaction }) => {
   const { id } = useParams();
   const wallet = wallets.find((w) => w.id === parseInt(id));
 
   const [transactionToDelete, setTransactionToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAddTransactionModal, setShowAddTransactionModal] = useState(false);
+  const [transactionToEdit, setTransactionToEdit] = useState(null);
+  const [showEditTransactionModal, setShowEditTransactionModal] = useState(false);
 
   const [value, setValue] = useState("");
   const [volume, setVolume] = useState("");
@@ -51,6 +54,30 @@ const WalletDetail = ({ wallets, addTransaction, deleteTransaction }) => {
     setShowAddTransactionModal(false);
   };
 
+  const handleEditClick = (transactionIndex) => {
+    const transaction = wallet.transactions[transactionIndex];
+    setTransactionToEdit(transactionIndex);
+    setValue(transaction.value);
+    setVolume(transaction.volume);
+    setAmount(transaction.amount);
+    setDate(transaction.date);
+    setExchange(transaction.exchange);
+    setShowEditTransactionModal(true);
+  };
+
+  const handleEditTransaction = (e) => {
+    e.preventDefault();
+    const updatedTransaction = {
+      value: parseFloat(value),
+      volume: parseFloat(volume),
+      amount: parseFloat(amount),
+      date,
+      exchange,
+    };
+    updateTransaction(wallet.id, transactionToEdit, updatedTransaction);
+    setShowEditTransactionModal(false);
+  };
+
   return (
     <Container className="my-3">
       <Row>
@@ -84,7 +111,7 @@ const WalletDetail = ({ wallets, addTransaction, deleteTransaction }) => {
                 <th>Quantità acquistata</th>
                 <th>Data</th>
                 <th>Exchange</th>
-                <th>Azione</th> {/* Aggiungi la colonna Azione */}
+                <th>Azione</th>
               </tr>
             </thead>
             <tbody>
@@ -97,6 +124,9 @@ const WalletDetail = ({ wallets, addTransaction, deleteTransaction }) => {
                   <td>{transaction.date}</td>
                   <td>{transaction.exchange}</td>
                   <td>
+                    <Button variant="secondary" onClick={() => handleEditClick(index)}>
+                      <LuPencil className="mb-1" size={16} />
+                    </Button>
                     <Button variant="danger" onClick={() => handleDeleteClick(index)}>
                       <FaRegTrashCan className="mb-1" size={16} />
                     </Button>
@@ -131,6 +161,69 @@ const WalletDetail = ({ wallets, addTransaction, deleteTransaction }) => {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleAddTransaction} className="my-2">
+            <Form.Group controlId="formValue">
+              <Form.Label className="my-1">Prezzo di acquisto</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Inserisci prezzo di acquisto"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                min="0"
+                step="any"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formVolume">
+              <Form.Label className="my-1">Importo</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Inserisci importo"
+                value={volume}
+                onChange={(e) => setVolume(e.target.value)}
+                min="0"
+                step="any"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formAmount">
+              <Form.Label className="my-1">Quantità acquistata</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Inserisci quantità acquistata"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                min="0"
+                step="any"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formDate">
+              <Form.Label className="my-1">Data</Form.Label>
+              <Form.Control type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            </Form.Group>
+
+            <Form.Group controlId="formExchange">
+              <Form.Label className="my-1">Exchange</Form.Label>
+              <Form.Control type="text" value={exchange} onChange={(e) => setExchange(e.target.value)} />
+            </Form.Group>
+
+            <Button variant="primary" type="submit" className="mt-3">
+              Salva
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
+      {/* Modale per modificare una transazione */}
+      <Modal show={showEditTransactionModal} onHide={() => setShowEditTransactionModal(false)} className="my-5">
+        <Modal.Header closeButton>
+          <Modal.Title>Modifica Transazione</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleEditTransaction} className="my-2">
             <Form.Group controlId="formValue">
               <Form.Label className="my-1">Prezzo di acquisto</Form.Label>
               <Form.Control

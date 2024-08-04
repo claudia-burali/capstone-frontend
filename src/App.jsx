@@ -59,6 +59,25 @@ const App = () => {
     setWallets(updatedWallets);
   };
 
+  const updateTransaction = (walletId, transactionIndex, updatedTransaction) => {
+    const updatedWallets = wallets.map((wallet) => {
+      if (wallet.id === parseInt(walletId)) {
+        const transactions = wallet.transactions.map((transaction, index) => {
+          if (index === transactionIndex) {
+            return updatedTransaction;
+          }
+          return transaction;
+        });
+        return {
+          ...wallet,
+          transactions,
+        };
+      }
+      return wallet;
+    });
+    setWallets(updatedWallets);
+  };
+
   const editWalletName = (walletId, newName, newCurrencyPair) => {
     const updatedWallets = wallets.map((wallet) => {
       if (wallet.id === parseInt(walletId)) {
@@ -90,6 +109,23 @@ const App = () => {
     dispatch(logoutUser());
   };
 
+  const updateAccount = (updatedData) => {
+    setAccountData({
+      ...accountData,
+      username: updatedData.username,
+      email: updatedData.email,
+      firstName: updatedData.firstName,
+      lastName: updatedData.lastName,
+      birthDate: updatedData.birthDate,
+    });
+  };
+
+  const deleteAccount = () => {
+    setAccountData({ username: "", email: "", firstName: "", lastName: "", birthDate: "" });
+    setIsAuthenticated(false);
+    dispatch(logoutUser());
+  };
+
   return (
     <Router>
       <div>
@@ -106,6 +142,7 @@ const App = () => {
                     wallets={wallets}
                     addTransaction={addTransaction}
                     deleteTransaction={deleteTransaction}
+                    updateTransaction={updateTransaction}
                   />
                 }
               />
@@ -120,7 +157,12 @@ const App = () => {
                   />
                 }
               />
-              <Route path="/account" element={<Account accountData={accountData} />} />
+              <Route
+                path="/account"
+                element={
+                  <Account accountData={accountData} updateAccount={updateAccount} deleteAccount={deleteAccount} />
+                }
+              />
             </>
           ) : (
             <Route path="*" element={<Navigate to="/" />} />
