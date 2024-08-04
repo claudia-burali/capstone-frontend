@@ -18,7 +18,11 @@ const WalletReduce = (state = initialState, action) => {
       return { ...state, loading: false, errorMsg: action.payload, success: false, error: true };
     case RESET_WALLET_STATE:
       return initialState;
-
+    case "DELETE_WALLET_SUCCESS":
+      return {
+        ...state,
+        wallets: state.wallets.filter((wallet) => wallet.id !== action.payload),
+      };
     default:
       return state;
   }

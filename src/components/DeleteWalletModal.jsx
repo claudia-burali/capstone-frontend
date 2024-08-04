@@ -1,13 +1,11 @@
 import { Button, Modal } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { DeleteWallet } from "../redux/actions/wallet";
-import { fetchProtectedResource } from "../redux/actions/user";
 
 const DeleteWalletModal = ({ show, handleClose, id }) => {
   const dispatch = useDispatch();
   const handleSubmit = () => {
     dispatch(DeleteWallet(id));
-    dispatch(fetchProtectedResource());
     handleClose();
   };
 

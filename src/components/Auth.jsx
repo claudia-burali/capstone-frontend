@@ -49,7 +49,7 @@ const Auth = ({ onLogin, onRegister }) => {
     <Container className="my-5">
       <Row className="justify-content-md-center">
         <Col md={6}>
-          <h2>{isLogin ? "Accedi" : "Benvenuto su ExelLense"}</h2>
+          <h2>{isLogin ? "Accedi" : "Benvenuto su ExelLens"}</h2>
           <Form className="my-3" onSubmit={handleSubmit}>
             {!isLogin && (
               <>

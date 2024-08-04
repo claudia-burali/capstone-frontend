@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { resetwalletState, UpdateWallet } from "../redux/actions/wallet";
@@ -6,6 +6,10 @@ import { resetwalletState, UpdateWallet } from "../redux/actions/wallet";
 const EditWalletModal = ({ name, currencyPair, show, handleClose, contentPair, id }) => {
   const [formData, setFormData] = useState({ name: "", currencyPairName: "" });
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setFormData({ name: name, currencyPairName: currencyPair });
+  }, [name, currencyPair]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,7 +23,6 @@ const EditWalletModal = ({ name, currencyPair, show, handleClose, contentPair, i
     e.preventDefault();
     dispatch(UpdateWallet(formData, id));
     dispatch(resetwalletState());
-    setFormData({ name: "", currencyPairName: "" });
     handleClose();
   };
 
@@ -43,7 +46,7 @@ const EditWalletModal = ({ name, currencyPair, show, handleClose, contentPair, i
             </Form.Group>
             <Form.Group controlId="formEditCurrencyPair">
               <Form.Label className="my-1">Coppia di valute</Form.Label>
-              <Form.Select name="currencyPairName" onChange={handleChange}>
+              <Form.Select name="currencyPairName" value={formData.currencyPairName} onChange={handleChange}>
                 <option>Seleziona una coppia di valute</option>
                 {contentPair &&
                   contentPair.map((currencyName) => (
@@ -62,4 +65,5 @@ const EditWalletModal = ({ name, currencyPair, show, handleClose, contentPair, i
     </>
   );
 };
+
 export default EditWalletModal;

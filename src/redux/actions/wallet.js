@@ -72,7 +72,7 @@ export const UpdateWallet = (walletData, walletId) => async (dispatch) => {
   }
 };
 
-export const DeleteWallet = (walletId) => async (dispatch) => {
+export const DeleteWallet = (walletId) => async (dispatch, getState) => {
   const token = localStorage.getItem("authToken");
   try {
     const response = await fetch(`http://localhost:3001/wallets/${walletId}`, {
@@ -82,12 +82,20 @@ export const DeleteWallet = (walletId) => async (dispatch) => {
         Authorization: `Bearer ${token}`,
       },
     });
+    const { authentication } = getState();
+    const updatedWallets = authentication.content.wallets.filter((wallet) => wallet.id !== walletId);
     const data = await response.json();
     if (!response.ok) {
       throw new Error(data.error || "Errore durante l'eliminazione");
     }
-    dispatch(fetchProtectedResource());
+    dispatch({
+      type: "DELETE_WALLET_SUCCESS",
+      payload: updatedWallets,
+    });
   } catch (error) {
-    dispatch(addWalletFailure(error.message));
+    dispatch({
+      type: "DELETE_WALLET_FAILURE",
+      payload: error,
+    });
   }
 };

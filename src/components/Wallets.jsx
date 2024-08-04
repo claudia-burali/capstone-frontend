@@ -20,7 +20,7 @@ const Wallets = () => {
 
   useEffect(() => {
     dispatch(fetchCurrencyPair());
-  }, []);
+  }, [dispatch]);
 
   const { contentPair } = useSelector((state) => state.currencyPair);
   const { content } = useSelector((state) => state.authentication);
@@ -36,6 +36,7 @@ const Wallets = () => {
     setWalletToEdit(wallet);
     setShowEditModal(true);
   };
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const handleCloseDeleteModal = () => setShowDeleteModal(false);
   const handleShowDeleteModal = (wallet) => {
@@ -83,11 +84,11 @@ const Wallets = () => {
                         {wallet.name} {wallet.currencyPair.name}
                       </div>
                       <div>
-                        <Button variant="secondary" className="ml-2">
-                          <LuPencil className="mb-1" size={16} onClick={() => handleShowEditModal(wallet)} />
+                        <Button variant="secondary" className="ml-2" onClick={() => handleShowEditModal(wallet)}>
+                          <LuPencil className="mb-1" size={16} />
                         </Button>
-                        <Button variant="danger" className="ml-2">
-                          <FaRegTrashCan className="mb-1" size={16} onClick={() => handleShowDeleteModal(wallet)} />
+                        <Button variant="danger" className="ml-2" onClick={() => handleShowDeleteModal(wallet)}>
+                          <FaRegTrashCan className="mb-1" size={16} />
                         </Button>
                       </div>
                     </div>
@@ -121,7 +122,7 @@ const Wallets = () => {
             </Form.Group>
             <Form.Group>
               <Form.Label className="my-1">Coppia di valute</Form.Label>
-              <Form.Select name="currencyPairName" onChange={handleChange}>
+              <Form.Select name="currencyPairName" value={formData.currencyPairName} onChange={handleChange}>
                 <option>Seleziona una coppia di valute</option>
                 {contentPair &&
                   contentPair.map((currencyName) => (

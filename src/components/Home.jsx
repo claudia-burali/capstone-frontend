@@ -6,7 +6,7 @@ const Home = () => {
     <Container className="my-5">
       <Row>
         <Col>
-          <h1>Benvenuto su ExelLense</h1>
+          <h1>Benvenuto su ExelLens</h1>
           <p>
             Questa applicazione ti permette di tracciare i tuoi investimenti, gestire i tuoi wallet e monitorare le
             transazioni.
