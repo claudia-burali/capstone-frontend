@@ -84,6 +84,24 @@ const WalletDetail = () => {
     setShowEditTransactionModal(false);
   };
 
+  const calculateSaldo = () => {
+    return wallet.transactions.reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
+  };
+
+  const calculateTotaleInvestito = () => {
+    return wallet.transactions.reduce((sum, transaction) => sum + parseFloat(transaction.volume), 0);
+  };
+
+  const calculatePrezzoAcquistoMedio = () => {
+    const totaleInvestito = calculateTotaleInvestito();
+    const saldo = calculateSaldo();
+    return totaleInvestito / saldo;
+  };
+
+  const saldo = calculateSaldo();
+  const totaleInvestito = calculateTotaleInvestito();
+  const prezzoAcquistoMedio = calculatePrezzoAcquistoMedio();
+
   return (
     <Container className="my-3">
       <Row>
@@ -92,9 +110,9 @@ const WalletDetail = () => {
           <Card className="mb-4">
             <Card.Body>
               <Card.Title className="my-1 d-flex justify-content-between mb-3">
-                <div>Saldo: </div>
-                <div>Totale investito: </div>
-                <div>Prezzo di acquisto medio: </div>
+                <div>Saldo: {saldo.toFixed(2)}</div>
+                <div>Totale investito: {totaleInvestito.toFixed(2)}</div>
+                <div>Prezzo di acquisto medio: {prezzoAcquistoMedio.toFixed(2)}</div>
               </Card.Title>
             </Card.Body>
           </Card>
