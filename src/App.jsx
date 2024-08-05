@@ -22,8 +22,7 @@ const App = () => {
   };
 
   const handleRegister = (username, email, password) => {
-    setIsAuthenticated(true);
-    setAccountData({ username, email });
+    // L'utente non viene autenticato automaticamente dopo la registrazione
   };
 
   const handleLogout = () => {

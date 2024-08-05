@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, registerUser } from "../redux/actions/user";
 import { useNavigate } from "react-router-dom";
@@ -14,12 +14,33 @@ const Auth = ({ onLogin, onRegister }) => {
     password: "",
   });
   const [isLogin, setIsLogin] = useState(true);
+  const [error, setError] = useState(null);
   const toggleFormRegister = () => setIsLogin(false);
   const toggleFormLogin = () => setIsLogin(true);
-  const { success } = useSelector((state) => state.authentication);
-  const { success1 } = useSelector((state) => state.user);
+  const { success, error: authError } = useSelector((state) => state.authentication);
+  const { success1, error: registerError } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLogin && success) {
+      onLogin(formData.email, formData.password);
+      navigate("/wallets");
+    } else if (!isLogin && success1) {
+      toggleFormLogin();
+    }
+  }, [success, success1, isLogin, navigate, onLogin, formData.email, formData.password]);
+
+  useEffect(() => {
+    if (authError) {
+      setError(authError);
+    } else if (registerError) {
+      setError(registerError);
+    } else {
+      setError(null);
+    }
+  }, [authError, registerError]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -27,21 +48,15 @@ const Auth = ({ onLogin, onRegister }) => {
       [name]: value,
     });
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isLogin) {
       const { email, password } = formData;
       dispatch(loginUser({ email, password }));
-      onLogin(email, password);
-      if (success) {
-        navigate("/wallets");
-      }
     } else {
       dispatch(registerUser(formData));
       onRegister(formData.username, formData.email, formData.password);
-      if (success1) {
-        toggleFormLogin();
-      }
     }
   };
 
@@ -50,6 +65,7 @@ const Auth = ({ onLogin, onRegister }) => {
       <Row className="justify-content-md-center">
         <Col md={6}>
           <h2>{isLogin ? "Accedi" : "Benvenuto su ExelLens"}</h2>
+          {error && <Alert variant="danger">Errore!{error}</Alert>}
           <Form className="my-3" onSubmit={handleSubmit}>
             {!isLogin && (
               <>

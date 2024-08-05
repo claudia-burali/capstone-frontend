@@ -19,7 +19,7 @@ const NavigationBar = ({ isAuthenticated, handleLogout }) => {
               <Nav.Link as={Link} to="/wallets">
                 Wallets
               </Nav.Link>
-              <NavDropdown title="Account" id="basic-nav-dropdown" alignRight>
+              <NavDropdown title="Account" id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to="/account">
                   Account Details
                 </NavDropdown.Item>
