@@ -67,7 +67,7 @@ const WalletDetail = () => {
     handleCloseAddTransactionModal();
   };
 
-  const handleDeleteClick = (transactionIndex) => {
+  /*const handleDeleteClick = (transactionIndex) => {
     setTransactionToDelete(transactionIndex);
     setShowDeleteModal(true);
   };
@@ -82,7 +82,7 @@ const WalletDetail = () => {
     e.preventDefault();
     // Logica per modificare la transazione
     setShowEditTransactionModal(false);
-  };
+  };*/
 
   const calculateSaldo = () => {
     return wallet.transactions.reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
@@ -101,6 +101,8 @@ const WalletDetail = () => {
   const saldo = calculateSaldo();
   const totaleInvestito = calculateTotaleInvestito();
   const prezzoAcquistoMedio = calculatePrezzoAcquistoMedio();
+  const base_ticker = wallet.currencyPair.baseTicker;
+  const quote_ticker = wallet.currencyPair.quoteTicker;
 
   return (
     <Container className="my-3">
@@ -110,9 +112,15 @@ const WalletDetail = () => {
           <Card className="mb-4">
             <Card.Body>
               <Card.Title className="my-1 d-flex justify-content-between mb-3">
-                <div>Saldo: {saldo.toFixed(2)}</div>
-                <div>Totale investito: {totaleInvestito.toFixed(2)}</div>
-                <div>Prezzo di acquisto medio: {prezzoAcquistoMedio.toFixed(2)}</div>
+                <div>
+                  Saldo: {saldo.toFixed(2)} {base_ticker}
+                </div>
+                <div>
+                  Totale investito: {totaleInvestito.toFixed(2)} {quote_ticker}
+                </div>
+                <div>
+                  Prezzo di acquisto medio: {prezzoAcquistoMedio.toFixed(2)} {quote_ticker}
+                </div>
               </Card.Title>
             </Card.Body>
           </Card>
