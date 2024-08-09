@@ -1,14 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Modal, Form } from "react-bootstrap";
+import { Container, Row, Col, Button, Modal, Form, Spinner, Alert } from "react-bootstrap";
 import { LuPencil } from "react-icons/lu";
-import { connect } from "react-redux";
-import { updateAccount, deleteAccount, fetchUser } from "../redux/actions/user";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { updateAccount, deleteAccount, fetchUser, uploadImage } from "../redux/actions/user";
 import { useNavigate } from "react-router-dom";
 
-const Account = ({ accountData, updateAccount, deleteAccount, fetchUser }) => {
+const Account = ({ accountData, updateAccount, handleLogout, fetchUser }) => {
+  const { error } = useSelector((state) => state.account);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const { loading, success } = useSelector((state) => state.image);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleSaveChanges = () => {
+    if (!selectedFile) {
+      alert("Per favore seleziona un'immagine prima di salvare.");
+      return;
+    }
+
+    dispatch(uploadImage(selectedFile));
+  };
+  useEffect(() => {
+    if (success) {
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+        setShowImageModal(false);
+      }, 3000);
+    }
+  }, [success, setShowImageModal]);
+
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showImageModal, setShowImageModal] = useState(false);
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -17,7 +44,7 @@ const Account = ({ accountData, updateAccount, deleteAccount, fetchUser }) => {
     surname: "",
     birthDate: "",
   });
-  const [profileImage, setProfileImage] = useState("");
+  const [avatarURL, setAvatarURL] = useState("");
 
   useEffect(() => {
     // Caricare i dati dell'utente quando il componente è montato
@@ -34,9 +61,12 @@ const Account = ({ accountData, updateAccount, deleteAccount, fetchUser }) => {
         surname: accountData.surname || "",
         birthDate: accountData.birthDate || "",
       });
-      setProfileImage(accountData.profileImage || "");
+      setAvatarURL(accountData.avatarURL || "");
     }
   }, [accountData]);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,41 +75,18 @@ const Account = ({ accountData, updateAccount, deleteAccount, fetchUser }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateAccount({ ...formData, profileImage });
+    updateAccount({ ...formData, avatarURL });
     setShowModal(false);
   };
 
   const handleDeleteAccount = () => {
-    deleteAccount();
-    setShowDeleteModal(false);
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+    dispatch(deleteAccount());
+    if (!error) {
+      handleLogout();
+      setShowDeleteModal(false);
+      navigate("/");
     }
   };
-
-  const handleImageSubmit = (e) => {
-    e.preventDefault();
-    updateAccount({ ...formData, profileImage });
-    setShowImageModal(false);
-  };
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!accountData) {
-      setTimeout(() => {
-        navigate("/");
-      }, 3000);
-    }
-  }, [accountData]);
 
   if (!accountData) {
     return <div>Account eliminato!</div>; // Mostra un indicatore di caricamento o un messaggio di attesa
@@ -95,7 +102,7 @@ const Account = ({ accountData, updateAccount, deleteAccount, fetchUser }) => {
               <div className="mb-2">
                 <img
                   src={
-                    profileImage ||
+                    avatarURL ||
                     "https://lh3.googleusercontent.com/n5VkLPYLHVzIOvT3t6U56xR28g1KFhO2U1PMCS1OLcM-loYSu4FihFLGA4hV_FcBMFdgf4skaXEN4GIETcFsT3rIm8DddCbLHsG0xg"
                   }
                   alt="Profile"
@@ -204,25 +211,25 @@ const Account = ({ accountData, updateAccount, deleteAccount, fetchUser }) => {
           <Modal.Title>Cambia Immagine del Profilo</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={handleImageSubmit}>
-            <Form.Group controlId="formProfileImage">
-              <Form.Label className="my-1">Seleziona una nuova immagine</Form.Label>
-              <Form.Control type="file" accept="image/*" onChange={handleImageChange} />
-            </Form.Group>
-            {profileImage && (
-              <div className="mt-3 text-center">
-                <img
-                  src={profileImage}
-                  alt="New Profile"
-                  className="img-fluid rounded-circle"
-                  style={{ width: "150px", height: "150px" }}
-                />
-              </div>
-            )}
-            <Button variant="primary" type="submit" className="mt-3">
-              Salva
-            </Button>
-          </Form>
+          <Form.Group controlId="formavAtarURL">
+            {loading && <Spinner animation="border" />}
+            {showSuccessMessage && <Alert variant="success">Immagine modificata!</Alert>}
+            <Form.Label className="my-1">Seleziona una nuova immagine</Form.Label>
+            <Form.Control type="file" onChange={handleFileChange} />
+          </Form.Group>
+          {avatarURL && (
+            <div className="mt-3 text-center">
+              <img
+                src={avatarURL}
+                alt="New Profile"
+                className="img-fluid rounded-circle"
+                style={{ width: "150px", height: "150px" }}
+              />
+            </div>
+          )}
+          <Button variant="primary" onClick={handleSaveChanges} disabled={loading} className="mt-3">
+            Salva
+          </Button>
         </Modal.Body>
       </Modal>
     </Container>

@@ -5,6 +5,7 @@ import CurrencyPairReduce from "../reducers/currencyPairReduce";
 import AccountReduce from "../reducers/accountReduce";
 import TransactionReduce from "../reducers/transactionReduce";
 import WalletReduce from "../reducers/walletReduce";
+import { ImageReduce } from "../reducers/imageReduce";
 
 const rootReducer = combineReducers({
   user: UserReduce,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   wallet: WalletReduce,
   transaction: TransactionReduce,
   account: AccountReduce,
+  image: ImageReduce,
 });
 
 export const store = configureStore({

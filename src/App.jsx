@@ -9,7 +9,7 @@ import Auth from "./components/Auth";
 import Wallets from "./components/Wallets";
 import WalletDetail from "./components/WalletDetail";
 import Account from "./components/Account";
-import { logoutUser } from "./redux/actions/user";
+import { deleteAccount, logoutUser } from "./redux/actions/user";
 import { useDispatch } from "react-redux";
 
 const App = () => {
@@ -43,12 +43,6 @@ const App = () => {
     });
   };
 
-  const deleteAccount = () => {
-    setAccountData({ username: "", email: "", firstName: "", lastName: "", birthDate: "" });
-    setIsAuthenticated(false);
-    dispatch(logoutUser());
-  };
-
   return (
     <Router>
       <div>
@@ -63,7 +57,7 @@ const App = () => {
               <Route
                 path="/account"
                 element={
-                  <Account accountData={accountData} updateAccount={updateAccount} deleteAccount={deleteAccount} />
+                  <Account accountData={accountData} updateAccount={updateAccount} handleLogout={handleLogout} />
                 }
               />
             </>
