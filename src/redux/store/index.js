@@ -2,11 +2,13 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import UserReduce from "../reducers/userReduce";
 import UserLoginReduce from "../reducers/userReduceLogin";
 import CurrencyPairReduce from "../reducers/currencyPairReduce";
+import AccountReduce from "../reducers/accountReduce";
 
 const rootReducer = combineReducers({
   user: UserReduce,
   authentication: UserLoginReduce,
   currencyPair: CurrencyPairReduce,
+  account: AccountReduce,
 });
 
 export const store = configureStore({

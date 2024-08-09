@@ -1,20 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Modal, Form } from "react-bootstrap";
 import { LuPencil } from "react-icons/lu";
+import { connect } from "react-redux";
+import { updateAccount, deleteAccount, fetchUser } from "../redux/actions/user";
 
-const Account = ({ accountData, updateAccount, deleteAccount }) => {
+const Account = ({ accountData, updateAccount, deleteAccount, fetchUser }) => {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [formData, setFormData] = useState({
-    username: accountData.username,
-    email: accountData.email,
+    username: "",
+    email: "",
     password: "",
-    firstName: accountData.firstName || "",
-    lastName: accountData.lastName || "",
-    birthDate: accountData.birthDate || "",
+    name: "",
+    surname: "",
+    birthDate: "",
   });
-  const [profileImage, setProfileImage] = useState(accountData.profileImage || "");
+  const [profileImage, setProfileImage] = useState("");
+
+  useEffect(() => {
+    // Caricare i dati dell'utente quando il componente è montato
+    fetchUser();
+  }, [fetchUser]);
+
+  useEffect(() => {
+    // Aggiornare il form quando i dati dell'account cambiano
+    if (accountData) {
+      setFormData({
+        username: accountData.username || "",
+        email: accountData.email || "",
+        name: accountData.name || "",
+        surname: accountData.surname || "",
+        birthDate: accountData.birthDate || "",
+      });
+      setProfileImage(accountData.profileImage || "");
+    }
+  }, [accountData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,8 +66,13 @@ const Account = ({ accountData, updateAccount, deleteAccount }) => {
 
   const handleImageSubmit = (e) => {
     e.preventDefault();
+    updateAccount({ ...formData, profileImage });
     setShowImageModal(false);
   };
+
+  if (!accountData) {
+    return <div>Loading...</div>; // Mostra un indicatore di caricamento o un messaggio di attesa
+  }
 
   return (
     <Container className="my-3">
@@ -75,19 +101,19 @@ const Account = ({ accountData, updateAccount, deleteAccount }) => {
             <div className="d-flex gap-5">
               <div>
                 <p>
-                  <strong>Nome:</strong> {accountData.firstName}
+                  <strong>Nome:</strong> {formData.name}
                 </p>
                 <p>
-                  <strong>Cognome:</strong> {accountData.lastName}
+                  <strong>Cognome:</strong> {formData.surname}
                 </p>
                 <p>
-                  <strong>Data di nascita:</strong> {accountData.birthDate}
+                  <strong>Data di nascita:</strong> {formData.birthDate}
                 </p>
                 <p>
-                  <strong>Username:</strong> {accountData.username}
+                  <strong>Username:</strong> {formData.username}
                 </p>
                 <p>
-                  <strong>Email:</strong> {accountData.email}
+                  <strong>Email:</strong> {formData.email}
                 </p>
                 <p>
                   <strong>Password:</strong> ********
@@ -113,14 +139,14 @@ const Account = ({ accountData, updateAccount, deleteAccount }) => {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formFirstName">
+            <Form.Group controlId="formName">
               <Form.Label className="my-1">Nome</Form.Label>
-              <Form.Control type="text" name="firstName" value={formData.firstName} onChange={handleChange} />
+              <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} />
             </Form.Group>
 
-            <Form.Group controlId="formLastName">
+            <Form.Group controlId="formSurname">
               <Form.Label className="my-1">Cognome</Form.Label>
-              <Form.Control type="text" name="lastName" value={formData.lastName} onChange={handleChange} />
+              <Form.Control type="text" name="surname" value={formData.surname} onChange={handleChange} />
             </Form.Group>
 
             <Form.Group controlId="formBirthDate">
@@ -203,4 +229,16 @@ const Account = ({ accountData, updateAccount, deleteAccount }) => {
   );
 };
 
-export default Account;
+// Mappa lo stato di Redux ai props del componente
+const mapStateToProps = (state) => ({
+  accountData: state.account.user,
+});
+
+// Mappa le azioni di Redux ai props del componente
+const mapDispatchToProps = {
+  updateAccount,
+  deleteAccount,
+  fetchUser,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Account);

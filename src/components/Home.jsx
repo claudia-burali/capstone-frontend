@@ -6,10 +6,9 @@ const Home = () => {
     <Container className="my-5">
       <Row>
         <Col>
-          <h1>Benvenuto su ExelLens</h1>
+          <h1>Welcome to ExcelLent</h1>
           <p>
-            Questa applicazione ti permette di tracciare i tuoi investimenti, gestire i tuoi wallet e monitorare le
-            transazioni.
+            Tired of these sheets? Trade your old calc sheets for an ✨excellent✨ new system. It'll feel like magic.
           </p>
         </Col>
       </Row>

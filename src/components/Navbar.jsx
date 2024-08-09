@@ -1,17 +1,18 @@
 import React from "react";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const NavigationBar = ({ isAuthenticated, handleLogout }) => {
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
-      <Navbar.Brand as={Link} to="/">
-        ExelLens
+    <Navbar bg="transparent" variant="dark" expand="lg">
+      <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
+        <div className="mb-1 mx-1">🔮</div>
+        <div>ExcelLent</div>
       </Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Toggle aria-controls="basic-navbar-nav" className="btn-primary mx-1" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="ml-auto">
-          <Nav.Link as={Link} to="/">
+        <Nav className="ml-auto d-flex align-items-center">
+          <Nav.Link as={Link} to="/" className="mx-2">
             Home
           </Nav.Link>
           {isAuthenticated ? (
@@ -30,8 +31,8 @@ const NavigationBar = ({ isAuthenticated, handleLogout }) => {
               </NavDropdown>
             </>
           ) : (
-            <Nav.Link as={Link} to="/auth">
-              Login/Registrazione
+            <Nav.Link as={Link} to="/auth" className="mx-2">
+              <Button variant="primary">Login</Button>
             </Nav.Link>
           )}
         </Nav>

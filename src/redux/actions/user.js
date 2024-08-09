@@ -5,6 +5,14 @@ export const LOGIN_USER_SUCCESS = "LOGIN_USER_SUCCESS";
 export const LOGIN_USER_FAILURE = "LOGIN_USER_FAILURE";
 export const LOGIN_USER_REQUEST = "LOGIN_USER_REQUEST";
 export const LOGOUT_USER = "LOGOUT_USER";
+export const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
+export const FETCH_USER_FAILURE = "FETCH_USER_FAILURE";
+export const UPDATE_ACCOUNT_REQUEST = "UPDATE_ACCOUNT_REQUEST";
+export const UPDATE_ACCOUNT_SUCCESS = "UPDATE_ACCOUNT_SUCCESS";
+export const UPDATE_ACCOUNT_FAILURE = "UPDATE_ACCOUNT_FAILURE";
+export const DELETE_ACCOUNT_REQUEST = "DELETE_ACCOUNT_REQUEST";
+export const DELETE_ACCOUNT_SUCCESS = "DELETE_ACCOUNT_SUCCESS";
+export const DELETE_ACCOUNT_FAILURE = "DELETE_ACCOUNT_FAILURE";
 
 const registerUserRequest = () => ({
   type: REGISTER_USER_REQUEST,
@@ -99,5 +107,103 @@ export const fetchProtectedResource = () => async (dispatch) => {
     dispatch(fetchResourceSuccess(data));
   } catch (error) {
     dispatch(fetchResourceFailure(error.message));
+  }
+};
+
+const fetchUserSuccess = (data) => ({
+  type: FETCH_USER_SUCCESS,
+  payload: data,
+});
+
+const fetchUserFailure = (error) => ({
+  type: FETCH_USER_FAILURE,
+  payload: error,
+});
+
+export const fetchUser = () => async (dispatch) => {
+  const token = localStorage.getItem("authToken");
+  try {
+    const response = await fetch("http://localhost:3001/users/me", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || "Errore durante il recupero dei dati dell'utente");
+    }
+    dispatch(fetchUserSuccess(data));
+  } catch (error) {
+    dispatch(fetchUserFailure(error.message));
+  }
+};
+
+const updateAccountRequest = () => ({
+  type: UPDATE_ACCOUNT_REQUEST,
+});
+
+const updateAccountSuccess = (data) => ({
+  type: UPDATE_ACCOUNT_SUCCESS,
+  payload: data,
+});
+
+const updateAccountFailure = (error) => ({
+  type: UPDATE_ACCOUNT_FAILURE,
+  payload: error,
+});
+
+export const updateAccount = (accountData) => async (dispatch) => {
+  const token = localStorage.getItem("authToken");
+  dispatch(updateAccountRequest());
+  try {
+    const response = await fetch("http://localhost:3001/users/me", {
+      method: "PUT",
+      body: JSON.stringify(accountData),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || "Errore durante l'aggiornamento dell'account");
+    }
+    dispatch(updateAccountSuccess(data));
+  } catch (error) {
+    dispatch(updateAccountFailure(error.message));
+  }
+};
+
+const deleteAccountRequest = () => ({
+  type: DELETE_ACCOUNT_REQUEST,
+});
+
+const deleteAccountSuccess = () => ({
+  type: DELETE_ACCOUNT_SUCCESS,
+});
+
+const deleteAccountFailure = (error) => ({
+  type: DELETE_ACCOUNT_FAILURE,
+  payload: error,
+});
+
+export const deleteAccount = () => async (dispatch) => {
+  const token = localStorage.getItem("authToken");
+  dispatch(deleteAccountRequest());
+  try {
+    const response = await fetch("http://localhost:3001/users/me", {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Errore durante l'eliminazione dell'account");
+    }
+    dispatch(deleteAccountSuccess());
+  } catch (error) {
+    dispatch(deleteAccountFailure(error.message));
   }
 };

@@ -1,0 +1,23 @@
+// Sovrascrivi le variabili di Bootstrap qui
+$primary: #5c54af;
+$secondary: #8d9de9;
+$danger: #7B287D;
+$background: #111011;
+
+
+// Importa Bootstrap dopo aver sovrascritto le variabili
+@import "~bootstrap/scss/bootstrap";
+
+.btn-primary {
+  background-color: $primary;
+  border-color: $primary;
+
+  &:hover {
+    background-color: darken($primary, 10%);
+    border-color: darken($primary, 10%);
+  }
+}
+
+body {
+  background-color: $background;
+}
