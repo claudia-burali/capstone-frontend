@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Form, Button, Card, Modal } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Card, Modal, Spinner, Alert } from "react-bootstrap";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { GrAdd } from "react-icons/gr";
 import { LuPencil } from "react-icons/lu";
@@ -47,10 +47,33 @@ const Wallets = () => {
   const handleAddSubmit = (e) => {
     e.preventDefault();
     dispatch(AddWallet(formData));
-    dispatch(resetwalletState());
     setFormData({ name: "", currencyPairName: "" });
-    handleCloseAddModal();
   };
+
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const { loading, success, error } = useSelector((state) => state.wallet);
+
+  useEffect(() => {
+    if (success) {
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+        dispatch(resetwalletState());
+        handleCloseAddModal();
+      }, 3000);
+    }
+  }, [success, handleCloseAddModal]);
+
+  useEffect(() => {
+    if (error) {
+      setShowErrorMessage(true);
+      setTimeout(() => {
+        setShowErrorMessage(false);
+        dispatch(resetwalletState());
+      }, 3000);
+    }
+  }, [error]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -104,12 +127,15 @@ const Wallets = () => {
       </Row>
 
       {/* Modale per aggiungere un nuovo wallet */}
-      <Modal show={showAddModal} onHide={handleCloseAddModal} className="my-5">
+      <Modal show={showAddModal} onHide={handleCloseAddModal} className="my-5" animation={false}>
         <Modal.Header closeButton>
           <Modal.Title>Aggiungi nuovo Wallet</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleAddSubmit}>
+            {loading && <Spinner animation="border" />}
+            {showErrorMessage && <Alert variant="danger">Errore!</Alert>}
+            {showSuccessMessage && <Alert variant="success">Wallet aggiunto con successo!</Alert>}
             <Form.Group controlId="formName">
               <Form.Label className="my-1">Nome del Wallet</Form.Label>
               <Form.Control

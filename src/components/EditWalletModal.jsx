@@ -1,15 +1,40 @@
 import { useState, useEffect } from "react";
-import { Button, Form, Modal } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { Alert, Button, Form, Modal, Spinner } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import { resetwalletState, UpdateWallet } from "../redux/actions/wallet";
 
 const EditWalletModal = ({ name, currencyPair, show, handleClose, contentPair, id }) => {
   const [formData, setFormData] = useState({ name: "", currencyPairName: "" });
   const dispatch = useDispatch();
 
+  const { loading, success, error } = useSelector((state) => state.wallet);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+
   useEffect(() => {
     setFormData({ name: name, currencyPairName: currencyPair });
   }, [name, currencyPair]);
+
+  useEffect(() => {
+    if (success) {
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+        dispatch(resetwalletState());
+        handleClose();
+      }, 3000);
+    }
+  }, [success, handleClose]);
+
+  useEffect(() => {
+    if (error) {
+      setShowErrorMessage(true);
+      setTimeout(() => {
+        setShowErrorMessage(false);
+        dispatch(resetwalletState());
+      }, 3000);
+    }
+  }, [error]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,18 +47,19 @@ const EditWalletModal = ({ name, currencyPair, show, handleClose, contentPair, i
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(UpdateWallet(formData, id));
-    dispatch(resetwalletState());
-    handleClose();
   };
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} className="my-5">
+      <Modal show={show} onHide={handleClose} className="my-5" animation={false}>
         <Modal.Header closeButton>
           <Modal.Title>Modifica Nome Wallet</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
+            {loading && <Spinner animation="border" />}
+            {showErrorMessage && <Alert variant="danger">Errore!</Alert>}
+            {showSuccessMessage && <Alert variant="success">Wallet modificato con successo!</Alert>}
             <Form.Group controlId="formEditName">
               <Form.Label className="my-1">Nuovo nome del Wallet</Form.Label>
               <Form.Control

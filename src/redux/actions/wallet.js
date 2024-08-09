@@ -41,7 +41,6 @@ export const AddWallet = (walletData) => async (dispatch) => {
     }
 
     dispatch(addWalletSuccess(data.message));
-    dispatch(resetwalletState());
     dispatch(fetchProtectedResource());
   } catch (error) {
     dispatch(addWalletFailure(error.message));
@@ -65,7 +64,6 @@ export const UpdateWallet = (walletData, walletId) => async (dispatch) => {
       throw new Error(data.error || "Errore durante la modifica");
     }
     dispatch(addWalletSuccess(data.message));
-    dispatch(resetwalletState());
     dispatch(fetchProtectedResource());
   } catch (error) {
     dispatch(addWalletFailure(error.message));
@@ -88,14 +86,9 @@ export const DeleteWallet = (walletId) => async (dispatch, getState) => {
     if (!response.ok) {
       throw new Error(data.error || "Errore durante l'eliminazione");
     }
-    dispatch({
-      type: "DELETE_WALLET_SUCCESS",
-      payload: updatedWallets,
-    });
+    dispatch(addWalletSuccess(data.message));
+    dispatch(fetchProtectedResource());
   } catch (error) {
-    dispatch({
-      type: "DELETE_WALLET_FAILURE",
-      payload: error,
-    });
+    dispatch(addWalletFailure(error.message));
   }
 };

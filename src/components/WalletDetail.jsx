@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Button, Table, Modal, Form } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Table, Modal, Form, Spinner, Alert } from "react-bootstrap";
 import { GrAdd } from "react-icons/gr";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
 import { LuPencil } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
-import { AddTransaction } from "../redux/actions/transaction";
+import { AddTransaction, resetTransactionState } from "../redux/actions/transaction";
 import EditTransactionModal from "./EditTransactionModal";
 import DeleteTransactionModal from "./DeleteTransactionModal";
+import { fetchProtectedResource } from "../redux/actions/user";
 
 const WalletDetail = () => {
   const { id } = useParams();
@@ -31,6 +32,10 @@ const WalletDetail = () => {
     }
   }, [content, id]);
 
+  useEffect(() => {
+    dispatch(fetchProtectedResource());
+  }, [dispatch]);
+
   const [transactionToDelete, setTransactionToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const handleCloseDeleteModal = () => setShowDeleteModal(false);
@@ -48,6 +53,30 @@ const WalletDetail = () => {
     setShowEditTransactionModal(true);
     setTransactionToEdit(transaction);
   };
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const { loading, success, error } = useSelector((state) => state.transaction);
+
+  useEffect(() => {
+    if (success) {
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+        dispatch(resetTransactionState());
+        handleCloseAddTransactionModal();
+      }, 3000);
+    }
+  }, [success, handleCloseAddTransactionModal]);
+
+  useEffect(() => {
+    if (error) {
+      setShowErrorMessage(true);
+      setTimeout(() => {
+        setShowErrorMessage(false);
+        dispatch(resetTransactionState());
+      }, 3000);
+    }
+  }, [error]);
 
   if (!wallet) {
     return <div>Wallet non trovato</div>;
@@ -64,7 +93,7 @@ const WalletDetail = () => {
   const handleAddSubmit = (e) => {
     e.preventDefault();
     dispatch(AddTransaction(formData, wallet.id));
-    handleCloseAddTransactionModal();
+    setFormData({ volume: "", value: "", amount: "", date: "", exchange: "" });
   };
 
   /*const handleDeleteClick = (transactionIndex) => {
@@ -92,10 +121,20 @@ const WalletDetail = () => {
     return wallet.transactions.reduce((sum, transaction) => sum + parseFloat(transaction.volume), 0);
   };
 
-  const calculatePrezzoAcquistoMedio = () => {
+  /*const calculatePrezzoAcquistoMedio = () => {
     const totaleInvestito = calculateTotaleInvestito();
     const saldo = calculateSaldo();
     return totaleInvestito / saldo;
+  };*/
+
+  const calculatePrezzoAcquistoMedio = () => {
+    const totaleVolumePesato = wallet.transactions.reduce(
+      (sum, transaction) => sum + transaction.value * transaction.amount,
+      0
+    );
+    const totaleQuantita = wallet.transactions.reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
+
+    return totaleQuantita === 0 ? 0 : totaleVolumePesato / totaleQuantita;
   };
 
   const saldo = calculateSaldo();
@@ -172,12 +211,15 @@ const WalletDetail = () => {
       </Row>
 
       {/* Modale per aggiungere una nuova transazione */}
-      <Modal show={showAddTransactionModal} onHide={handleCloseAddTransactionModal} className="my-5">
+      <Modal show={showAddTransactionModal} onHide={handleCloseAddTransactionModal} className="my-5" animation={false}>
         <Modal.Header closeButton>
           <Modal.Title>Aggiungi Transazione</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleAddSubmit} className="my-2">
+            {loading && <Spinner animation="border" />}
+            {showErrorMessage && <Alert variant="danger">Errore!</Alert>}
+            {showSuccessMessage && <Alert variant="success">Transazione aggiunta con successo!</Alert>}
             <Form.Group controlId="formValue">
               <Form.Label className="my-1">Prezzo di acquisto</Form.Label>
               <Form.Control

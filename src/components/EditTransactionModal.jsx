@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Button, Form, Modal } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { Alert, Button, Form, Modal, Spinner } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import { resetTransactionState, UpdateTransaction } from "../redux/actions/transaction";
 import { fetchProtectedResource } from "../redux/actions/user";
 
@@ -36,17 +36,44 @@ const EditTransactionModal = ({ show, handleClose, transactionId, volume, value,
   const handleEditSubmit = (e) => {
     e.preventDefault();
     dispatch(UpdateTransaction(formData, transactionId));
-    handleClose();
   };
+
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const { loading, success, error } = useSelector((state) => state.transaction);
+
+  useEffect(() => {
+    if (success) {
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+        dispatch(resetTransactionState());
+        handleClose();
+      }, 3000);
+    }
+  }, [success, handleClose]);
+
+  useEffect(() => {
+    if (error) {
+      setShowErrorMessage(true);
+      setTimeout(() => {
+        setShowErrorMessage(false);
+        dispatch(resetTransactionState());
+      }, 3000);
+    }
+  }, [error]);
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} className="my-5">
+      <Modal show={show} onHide={handleClose} className="my-5" animation={false}>
         <Modal.Header closeButton>
           <Modal.Title>Modifica Transazione</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleEditSubmit} className="my-2">
+            {loading && <Spinner animation="border" />}
+            {showErrorMessage && <Alert variant="danger">Errore!</Alert>}
+            {showSuccessMessage && <Alert variant="success">Transazione modificata con successo!</Alert>}
             <Form.Group controlId="formValue">
               <Form.Label className="my-1">Prezzo di acquisto</Form.Label>
               <Form.Control

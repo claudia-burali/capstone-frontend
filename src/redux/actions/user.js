@@ -159,7 +159,7 @@ export const updateAccount = (accountData) => async (dispatch) => {
   dispatch(updateAccountRequest());
   try {
     const response = await fetch("http://localhost:3001/users/me", {
-      method: "PUT",
+      method: "PATCH",
       body: JSON.stringify(accountData),
       headers: {
         "Content-Type": "application/json",

@@ -3,11 +3,15 @@ import UserReduce from "../reducers/userReduce";
 import UserLoginReduce from "../reducers/userReduceLogin";
 import CurrencyPairReduce from "../reducers/currencyPairReduce";
 import AccountReduce from "../reducers/accountReduce";
+import TransactionReduce from "../reducers/transactionReduce";
+import WalletReduce from "../reducers/walletReduce";
 
 const rootReducer = combineReducers({
   user: UserReduce,
   authentication: UserLoginReduce,
   currencyPair: CurrencyPairReduce,
+  wallet: WalletReduce,
+  transaction: TransactionReduce,
   account: AccountReduce,
 });
 

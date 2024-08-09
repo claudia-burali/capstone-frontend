@@ -41,7 +41,6 @@ export const AddTransaction = (transactionData, walletId) => async (dispatch) =>
     }
 
     dispatch(addTransactionSuccess(data.message));
-    dispatch(resetTransactionState());
     dispatch(fetchProtectedResource());
   } catch (error) {
     dispatch(addTransactionFailure(error.message));
@@ -65,7 +64,6 @@ export const UpdateTransaction = (transactionData, transactionId) => async (disp
       throw new Error(data.error || "Errore durante la modifica");
     }
     dispatch(addTransactionSuccess(data.message));
-    dispatch(resetTransactionState());
     dispatch(fetchProtectedResource());
   } catch (error) {
     dispatch(addTransactionFailure(error.message));
@@ -86,10 +84,9 @@ export const DeleteTransaction = (walletId, transactionId) => async (dispatch) =
     if (!response.ok) {
       throw new Error(data.error || "Errore durante l'eliminazione");
     }
+    dispatch(addTransactionSuccess(data.message));
+    dispatch(fetchProtectedResource());
   } catch (error) {
-    dispatch({
-      type: "DELETE_TRANSACTION_FAILURE",
-      payload: error,
-    });
+    dispatch(addTransactionFailure(error.message));
   }
 };
