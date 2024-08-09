@@ -203,6 +203,7 @@ export const deleteAccount = () => async (dispatch) => {
       throw new Error("Errore durante l'eliminazione dell'account");
     }
     dispatch(deleteAccountSuccess());
+    dispatch(logoutUser());
   } catch (error) {
     dispatch(deleteAccountFailure(error.message));
   }

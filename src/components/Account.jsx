@@ -3,6 +3,7 @@ import { Container, Row, Col, Button, Modal, Form } from "react-bootstrap";
 import { LuPencil } from "react-icons/lu";
 import { connect } from "react-redux";
 import { updateAccount, deleteAccount, fetchUser } from "../redux/actions/user";
+import { useNavigate } from "react-router-dom";
 
 const Account = ({ accountData, updateAccount, deleteAccount, fetchUser }) => {
   const [showModal, setShowModal] = useState(false);
@@ -70,8 +71,18 @@ const Account = ({ accountData, updateAccount, deleteAccount, fetchUser }) => {
     setShowImageModal(false);
   };
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!accountData) {
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
+    }
+  }, [accountData]);
+
   if (!accountData) {
-    return <div>Loading...</div>; // Mostra un indicatore di caricamento o un messaggio di attesa
+    return <div>Account eliminato!</div>; // Mostra un indicatore di caricamento o un messaggio di attesa
   }
 
   return (
@@ -162,17 +173,6 @@ const Account = ({ accountData, updateAccount, deleteAccount, fetchUser }) => {
             <Form.Group controlId="formEmail">
               <Form.Label className="my-1">Email</Form.Label>
               <Form.Control type="email" name="email" value={formData.email} onChange={handleChange} />
-            </Form.Group>
-
-            <Form.Group controlId="formPassword">
-              <Form.Label className="my-1">Password</Form.Label>
-              <Form.Control
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Lascia vuoto se non vuoi cambiare la password"
-              />
             </Form.Group>
 
             <Button variant="primary" type="submit" className="mt-3">
