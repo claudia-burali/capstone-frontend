@@ -83,6 +83,11 @@ const Wallets = () => {
     });
   };
 
+  // Funzione per calcolare il saldo di un wallet
+  const calculateSaldo = (wallet) => {
+    return wallet.transactions.reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
+  };
+
   return (
     <Container className="my-4">
       <div className="my-1 d-flex justify-content-between align-items-center">
@@ -116,7 +121,9 @@ const Wallets = () => {
                       </div>
                     </div>
                   </Card.Title>
-                  <Card.Text>Saldo: {wallet.currencyPair.baseTicker}</Card.Text>
+                  <Card.Text>
+                    Saldo: {calculateSaldo(wallet).toFixed(2)} {wallet.currencyPair.baseTicker}
+                  </Card.Text>
                   <Link to={`/wallets/${wallet.id}`} className="btn btn-primary">
                     Dettagli
                   </Link>
