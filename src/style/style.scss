@@ -21,3 +21,42 @@ $background: #111011;
 body {
   background-color: $background;
 }
+
+/*FOOTER*/
+#footer {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 2.5em;
+}
+.lineheight {
+  line-height: 1.8em;
+}
+.fotLink {
+  font-size: 13px;
+  display: block;
+  text-align: left;
+  text-decoration: none;
+}
+.fotLink:hover {
+  text-decoration: underline;
+}
+.fotLinkIcon {
+  font-size: 15px;
+}
+.priDrop {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+}
+.langDrop {
+  font-size: 13px;
+  border: solid 1px;
+  /*width: 100%;*/
+}
+#footer i {
+  font-size: 20px;
+}
+#footer p {
+  margin: 0;
+}

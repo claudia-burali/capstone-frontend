@@ -22,17 +22,17 @@ const NavigationBar = ({ isAuthenticated, handleLogout }) => {
               </Nav.Link>
               <NavDropdown title="Account" id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to="/account">
-                  Account Details
+                  Riepilogo Account
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item as={Link} to="/" onClick={handleLogout}>
-                  Logout
+                  Disconnetti
                 </NavDropdown.Item>
               </NavDropdown>
             </>
           ) : (
             <Nav.Link as={Link} to="/auth" className="mx-2">
-              <Button variant="primary">Login</Button>
+              <Button variant="primary">Accedi</Button>
             </Nav.Link>
           )}
         </Nav>

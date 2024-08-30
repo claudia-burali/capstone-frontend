@@ -92,7 +92,7 @@ const Wallets = () => {
     <Container className="my-4">
       <div className="my-1 d-flex justify-content-between align-items-center">
         <div>
-          <h1>Riepilogo dei tuoi Wallets</h1>
+          <h2>Riepilogo investimenti: </h2>
         </div>
         <div>
           <Button variant="primary" onClick={handleShowAddModal}>
@@ -100,7 +100,7 @@ const Wallets = () => {
           </Button>
         </div>
       </div>
-      <Row className="my-2">
+      <Row className="my-3">
         <Col>
           {content &&
             content.wallets.map((wallet) => (

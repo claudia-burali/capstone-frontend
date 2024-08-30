@@ -9,7 +9,7 @@ import Auth from "./components/Auth";
 import Wallets from "./components/Wallets";
 import WalletDetail from "./components/WalletDetail";
 import Account from "./components/Account";
-import { deleteAccount, logoutUser } from "./redux/actions/user";
+import { logoutUser } from "./redux/actions/user";
 import { useDispatch } from "react-redux";
 
 const App = () => {
